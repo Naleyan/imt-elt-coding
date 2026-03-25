@@ -76,7 +76,7 @@ def transform_products() -> pd.DataFrame:
         invalid_prices = df[df["price_usd"] <= 0]
         if len(invalid_prices) > 0:
             # TODO (TP3): Replace with logger.warning(...)
-            logger.warning(f"⚠️  {len(invalid_prices)} products with price <= 0 (removed)")
+            logger.warning(f"⚠️{len(invalid_prices)} products with price <= 0 (removed)")
         df = df[df["price_usd"] > 0]
 
         # TODO: Step 4 — Convert boolean columns (is_active, is_hype_product)
