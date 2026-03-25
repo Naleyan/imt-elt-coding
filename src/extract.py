@@ -162,10 +162,15 @@ def extract_order_line_items() -> pd.DataFrame:
 def extract_reviews() -> pd.DataFrame:
     """Extract customer reviews from S3 → bronze.reviews."""
     # TODO: Same pattern, but use _read_jsonl_from_s3() instead of _read_csv_from_s3()
-    df = _read_jsonl_from_s3(f"{S3_PREFIX}/reviews/reviews.jsonl")
-    print(f"  ⭐ Reviews: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "reviews")
-    return df
+    try: 
+        df = _read_jsonl_from_s3(f"{S3_PREFIX}/reviews/reviews.jsonl")
+        logger.info(f"  ⭐ Reviews: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "reviews")
+        return df
+    except Exception as e:
+        logger.error(f"Failed to extract reviews: {e}")
+        raise
+
 
 
 # ---------------------------------------------------------------------------
@@ -175,10 +180,14 @@ def extract_clickstream() -> pd.DataFrame:
     """Extract clickstream events from S3 → bronze.clickstream."""
     # TODO: Same pattern, but use _read_partitioned_parquet_from_s3()
     # Note: pass a prefix (folder path), not a file key
-    df = _read_partitioned_parquet_from_s3(f"{S3_PREFIX}/clickstream/")
-    print(f"  🖱️ Clickstream: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "clickstream")
-    return df
+    try:
+        df = _read_partitioned_parquet_from_s3(f"{S3_PREFIX}/clickstream/")
+        logger.info(f"  🖱️ Clickstream: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "clickstream")
+        return df
+    except Exception as e:
+        logger.error(f"Failed to extract clickstream: {e}")
+        raise
 
 
 # ---------------------------------------------------------------------------

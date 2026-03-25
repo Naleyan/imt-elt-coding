@@ -10,6 +10,7 @@ Each log line should be a JSON object like:
 import json
 import logging
 from datetime import datetime, timezone
+from xml.sax import handler
 
 
 class JSONFormatter(logging.Formatter):
@@ -32,8 +33,16 @@ class JSONFormatter(logging.Formatter):
         # Bonus: if record.exc_info contains an exception, add an "exception" key
         #   if record.exc_info and record.exc_info[0] is not None:
         #       log_entry["exception"] = self.formatException(record.exc_info)
-
-        pass  # ← Replace with your implementation
+        format = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "level": record.levelname,
+            "module": record.module,
+            "function": record.funcName,
+            "message": record.getMessage()
+        }
+        if record.exc_info and record.exc_info[0] is not None:
+            format["exception"] = self.formatException(record.exc_info)
+        return json.dumps(format)
 
 
 def get_logger(name: str) -> logging.Logger:
@@ -55,5 +64,10 @@ def get_logger(name: str) -> logging.Logger:
     #   5. Add the handler to the logger
     #   6. Set the logger level to logging.DEBUG
     #   7. Return the logger
-
-    pass  # ← Replace with your implementation
+    logger = logging.getLogger(name)
+    if not logger.handlers:
+        console_output = logging.StreamHandler()
+        console_output.setFormatter(JSONFormatter())
+        logger.addHandler(console_output)
+    logger.setLevel(logging.DEBUG)
+    return logger
