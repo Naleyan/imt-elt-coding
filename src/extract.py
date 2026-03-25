@@ -6,6 +6,8 @@ Reads files from S3 data lake (CSV, JSONL, Parquet) → loads into Bronze schema
 import os
 from io import StringIO, BytesIO
 
+from torch import le
+
 import boto3
 import pandas as pd
 import pyarrow.parquet as pq
@@ -16,6 +18,8 @@ from src.database import get_engine, BRONZE_SCHEMA
 # TODO (TP3): Import your logger and create a module-level logger
 #   1. from src.logger import get_logger
 #   2. logger = get_logger(__name__)
+from src.logger import get_logger
+logger = get_logger(__name__)
 
 S3_BUCKET = os.getenv("S3_BUCKET_NAME", "kickz-empire-data")
 S3_PREFIX = os.getenv("S3_PREFIX", "raw")
@@ -96,8 +100,7 @@ def _load_to_bronze(df: pd.DataFrame, table_name: str, if_exists: str = "replace
         index=False,
     )
     # TODO (TP3): Replace with logger.info(...)
-    print(f"    ✅ {BRONZE_SCHEMA}.{table_name} — {len(df)} rows loaded")
-
+    logger.info(f"✅ {BRONZE_SCHEMA}.{table_name} — {len(df)} rows loaded")
 
 # ---------------------------------------------------------------------------
 # Extract functions — CSV datasets
@@ -105,37 +108,52 @@ def _load_to_bronze(df: pd.DataFrame, table_name: str, if_exists: str = "replace
 def extract_products() -> pd.DataFrame:
     """Extract the product catalog from S3 → bronze.products."""
     # TODO (TP3): Replace print with logger.info, add try/except + logger.error + raise
-    df = _read_csv_from_s3(f"{S3_PREFIX}/catalog/products.csv")
-    print(f"  📦 Products: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "products")
-    return df
-
+    try:
+        df = _read_csv_from_s3(f"{S3_PREFIX}/catalog/products.csv")
+        logger.info(f"  📦 Products: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "products")
+        return df
+    except Exception as e:  
+        logger.error(f"Failed to extract products: {e}")  
+        raise
 
 def extract_users() -> pd.DataFrame:
     """Extract users from S3 → bronze.users."""
     # TODO (TP3): Replace print with logger.info, add try/except + logger.error + raise
-    df = _read_csv_from_s3(f"{S3_PREFIX}/users/users.csv")
-    print(f"  👤 Users: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "users")
-    return df
-
+    try:
+        df = _read_csv_from_s3(f"{S3_PREFIX}/users/users.csv")
+        logger.info(f"👤 Users: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "users")
+        return df
+    except Exception as e:
+        logger.error(f"Error while extracting users: {e}")        
+        raise
 
 def extract_orders() -> pd.DataFrame:
     """Extract orders from S3 → bronze.orders."""
     # TODO (TP3): Replace print with logger.info, add try/except + logger.error + raise
-    df = _read_csv_from_s3(f"{S3_PREFIX}/orders/orders.csv")
-    print(f"  🛍️ Orders: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "orders")
-    return df
+    try:
+        df = _read_csv_from_s3(f"{S3_PREFIX}/orders/orders.csv")
+        logger.info(f"🛍️ Orders: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "orders")
+        return df
+    except Exception as e:
+        logger.error(f"Error while extracting orders: {e}")
+        raise
 
 
 def extract_order_line_items() -> pd.DataFrame:
     """Extract order line items from S3 → bronze.order_line_items."""
     # TODO: Same pattern as extract_products()
-    df = _read_csv_from_s3(f"{S3_PREFIX}/order_line_items/order_line_items.csv")
-    print(f"  📋 Line items: {len(df)} rows, {len(df.columns)} columns")
-    _load_to_bronze(df, "order_line_items")
-    return df
+    try:
+        df = _read_csv_from_s3(f"{S3_PREFIX}/order_line_items/order_line_items.csv")
+        logger.info(f"📋 Line items: {len(df)} rows, {len(df.columns)} columns")
+        _load_to_bronze(df, "order_line_items")
+        return df
+
+    except Exception as e:
+        logger.error(f"Error while extracting order line items: {e}")
+        raise
 
 
 # ---------------------------------------------------------------------------
