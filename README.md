@@ -2,17 +2,29 @@
 
 ELT (Extract, Load, Transform) pipeline for the **KICKZ EMPIRE** e-commerce website, built as part of the IMT Data Engineering course.
 
+## Context
+
+KICKZ EMPIRE is a fast-growing e-commerce platform specializing in sneakers and streetwear (Nike, Adidas, Jordan, New Balance, Puma…). The store sells sneakers, hoodies, t-shirts, joggers, and accessories to thousands of customers worldwide.
+
+The e-commerce team has been collecting data for weeks — orders, product catalogs, user registrations, customer reviews, clickstream events — but it all sits as raw files in an S3 data lake in multiple formats (CSV, JSONL, Parquet).
+As a result, no one can easily query it in order to make some business analyses. For example these questions remain unanswered: "How much revenue are we generating day by day? Which products are trending?" ,"Which brands and categories perform the best?, etc. 
+
+Our goal is to build an **ELT pipeline** following the **Medallion Architecture** (Bronze → Silver → Gold) in order to answer the business questions. Then We implement the good practices like testing, logging and monitoring for making our code ready for industrialization.
+
+
+
 ## 🏗️ Architecture
 
 ```
-S3 (CSV)  ──→  🥉 Bronze (raw)  ──→  🥈 Silver (clean)  ──→  🥇 Gold (analytics)
+S3 (CSV/JSON/parquet)  ──→  🥉 Bronze (raw)  ──→  🥈 Silver (clean)  ──→  🥇 Gold (analytics)
 ```
+
 
 | Layer | Schema | Description |
 |---|---|---|
-| **Bronze** | `bronze_groupN` | Raw data — faithful copy of CSV files from S3 |
-| **Silver** | `silver_groupN` | Cleaned data — internal columns removed, PII masked |
-| **Gold** | `gold_groupN` | Aggregated data — ready for dashboards |
+| **Bronze** | `bronze_group5` | Raw data — faithful copy of CSV files from S3 |
+| **Silver** | `silver_group5` | Cleaned data — internal columns removed, PII masked |
+| **Gold** | `gold_group5` | Aggregated data — ready for dashboards |
 
 ## 📁 Project Structure
 
