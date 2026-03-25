@@ -1,20 +1,3 @@
-"""
-TP3 — Shared pytest fixtures
-=============================
-Fixtures are fake DataFrames that mimic Bronze data.
-They are automatically injected into tests by pytest when a test parameter
-has the same name as a fixture function.
-
-Example:
-    # This fixture is defined here:
-    @pytest.fixture
-    def sample_products(): ...
-
-    # Any test with "sample_products" as a parameter receives it automatically:
-    def test_something(self, sample_products):
-        # sample_products is the DataFrame returned by the fixture above
-"""
-
 import pytest
 import pandas as pd
 
