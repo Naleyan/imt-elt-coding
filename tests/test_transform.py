@@ -112,21 +112,29 @@ class TestTransformUsers:
     def test_removes_pii_columns(self, mock_read, mock_load, sample_users):
         # TODO: Test that internal columns (_hashed_password, _last_ip, _device_fingerprint)
         # are removed from the result
-        pass
+        mock_read.return_value = sample_users
+        result = transform_users()
+        internal_cols = [col for col in result.columns if col.startswith("_")]
+        assert len(internal_cols) == 0
 
     @patch("src.transform._load_to_silver")
     @patch("src.transform._read_bronze")
     def test_fills_null_loyalty_tier(self, mock_read, mock_load, sample_users):
         # TODO: Test that NULL loyalty_tier values are replaced with "none"
         # Hint: result["loyalty_tier"].notna().all()
-        pass
+        mock_read.return_value = sample_users
+        result = transform_users()
+        assert result["loyalty_tier"].notna().all()
+
 
     @patch("src.transform._load_to_silver")
     @patch("src.transform._read_bronze")
     def test_normalizes_emails(self, mock_read, mock_load, sample_users):
         # TODO: Test that emails are lowercased and stripped of whitespace
         # " Alice@Example.COM " should become "alice@example.com"
-        pass
+        mock_read.return_value = sample_users
+        result = transform_users()
+        assert "alice@example.com" in result["email"].values
 
 
 class TestTransformOrders:
@@ -137,21 +145,28 @@ class TestTransformOrders:
     def test_removes_invalid_statuses(self, mock_read, mock_load, sample_orders):
         # TODO: Test that rows with invalid statuses are removed
         # "invalid_status" is not in the valid set → should be filtered out
-        pass
+        mock_read.return_value = sample_orders
+        result = transform_orders()
+        assert  "invalid status" not in result["status"].values
 
     @patch("src.transform._load_to_silver")
     @patch("src.transform._read_bronze")
     def test_converts_order_date(self, mock_read, mock_load, sample_orders):
         # TODO: Test that order_date is converted to datetime type
         # Hint: "datetime" in str(result["order_date"].dtype)
-        pass
+        mock_read.return_value = sample_orders
+        result = transform_orders()
+        assert "datetime" in str(result["order_date"].dtype)
+        
 
     @patch("src.transform._load_to_silver")
     @patch("src.transform._read_bronze")
     def test_replaces_null_coupon_code(self, mock_read, mock_load, sample_orders):
         # TODO: Test that NULL coupon_code values are replaced with ""
         # Hint: result["coupon_code"].notna().all()
-        pass
+        mock_read.return_value = sample_orders
+        result = transform_orders()
+        assert result["coupon_code"].notna().all()
 
 
 # =============================================================================
