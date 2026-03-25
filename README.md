@@ -1,23 +1,44 @@
-# KICKZ EMPIRE — ELT Pipeline
+# 👟 KICKZ EMPIRE — ELT Pipeline
 
 ELT (Extract, Load, Transform) pipeline for the **KICKZ EMPIRE** e-commerce website, built as part of the IMT Data Engineering course.
 
-## 1. Context
+## 📌 1. Context
 
-KICKZ EMPIRE is a fast-growing e-commerce platform specializing in sneakers and streetwear (Nike, Adidas, Jordan, New Balance, Puma…). The store sells sneakers, hoodies, t-shirts, joggers, and accessories to thousands of customers worldwide.
+KICKZ EMPIRE is a fast-growing e-commerce platform specializing in sneakers and streetwear (Nike, Adidas, Jordan, New Balance, Puma…). The store offers a wide range of products including sneakers, hoodies, t-shirts, joggers, and accessories to customers worldwide.
 
-The e-commerce team has been collecting data for weeks — orders, product catalogs, user registrations, customer reviews, clickstream events — but it all sits as raw files in an S3 data lake in multiple formats (CSV, JSONL, Parquet).
-As a result, no one can easily query it in order to make some business analyses. For example these questions remain unanswered: "How much revenue are we generating day by day? Which products are trending?" ,"Which brands and categories perform the best?, etc. 
+Over the past few weeks, large volumes of data have been collected:
 
-Our goal is to build an **ELT pipeline** following the **Medallion Architecture** (Bronze → Silver → Gold) in order to answer the business questions. Then We implement the good practices like testing, logging and monitoring for making our code ready for industrialization.
+Orders
+Product catalog
+User registrations
+Customer reviews
+Clickstream events
+
+These datasets are currently stored as raw files in an AWS S3 data lake in multiple formats (CSV, JSONL, Parquet). However, this raw structure makes it difficult to query and analyze the data efficiently.
+
+As a result, key business questions remain unanswered:
+
+How much revenue is generated daily?
+Which products are trending?
+Which brands and categories perform best?
+
+👉 The objective of this project is to build a robust ELT pipeline based on the Medallion Architecture (Bronze → Silver → Gold) to make this data actionable.
+
+We also implement best practices such as:
+
+Data testing
+Logging
+Monitoring
+
+to ensure the pipeline is production-ready.
 
 
 
 ## 🏗️ 2. Architecture
 
-```
-S3 (CSV/JSON/parquet)  ──→  🥉 Bronze (raw)  ──→  🥈 Silver (clean)  ──→  🥇 Gold (analytics)
-```
+
+![Architecture Medaillon](diagram.png)
+
 
 | Layer | Schema | Description |
 |---|---|---|
@@ -26,7 +47,7 @@ S3 (CSV/JSON/parquet)  ──→  🥉 Bronze (raw)  ──→  🥈 Silver (cle
 | **Gold** | `gold_group5` | Aggregated data — ready for dashboards |
 
 
-## 🚀 Setup instructions
+## 🚀 3. Setup instructions
 
 ```bash
 # 1. Clone the repo
@@ -49,7 +70,7 @@ cp .env.example .env  # Configure with your credentials (DB + AWS)
 python -m src.database
 ```
 
-## How to run
+## ▶️ 4. Run the Pipeline
 ```bash
 #  Extraction step (Bronze)
  python pipeline.py --step extract   # Run extraction only
@@ -64,7 +85,7 @@ python pipeline.py --step gold      # Run Gold layer only
 python pipeline.py                  # Run the full pipeline
 ```
 
-## How to test
+## 🧪 5. Testing
 ```bash
 # Run all tests
 pytest tests/ -v
@@ -73,7 +94,7 @@ pytest tests/ -v
 pytest tests/ -v --cov=src --cov-report=term-missing
 ```
 
-## ⚙️ Tech Stack
+## ⚙️ 6. Tech Stack
 
 - **Python 3.10+** : Main language
 - **pandas** : Data manipulation
@@ -82,7 +103,7 @@ pytest tests/ -v --cov=src --cov-report=term-missing
 - **PostgreSQL** (AWS RDS) : Database
 - **pytest** : Testing (TP2)
 
-## Team Members
-- **Eva Lansalot**
+## 👥 7. Team Members
+- **Eva LANSALOT**
 - **Kamon SOURABIE**
-- **Nada Aleian**
+- **Nada ALEIAN**
