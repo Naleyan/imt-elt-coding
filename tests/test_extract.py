@@ -34,14 +34,20 @@ class TestExtractProducts:
         #   2. result = extract_products()
         #   3. Assert result has the expected number of rows
         #   4. Assert mock_load was called (mock_load.assert_called_once())
-        pass
+        mock_read_csv.return_value = sample_products
+        result = extract_products()
+        assert len(result) == len(sample_products)
+        mock_load.assert_called_once()
+
 
     @patch("src.extract._load_to_bronze")
     @patch("src.extract._read_csv_from_s3")
     def test_returns_dataframe(self, mock_read_csv, mock_load, sample_products):
         # TODO: Test that the function returns a pandas DataFrame
         # Hint: isinstance(result, pd.DataFrame)
-        pass
+        mock_read_csv.return_value = sample_products
+        result = extract_products()
+        assert isinstance(result, pd.DataFrame)
 
 
 class TestExtractUsers:
@@ -50,15 +56,32 @@ class TestExtractUsers:
     @patch("src.extract._load_to_bronze")
     @patch("src.extract._read_csv_from_s3")
     def test_extracts_and_loads(self, mock_read_csv, mock_load, sample_users):
-        # TODO: Same pattern as TestExtractProducts
-        pass
+        mock_read_csv.return_value = sample_users
+        result = extract_users()
+        assert len(result) == len(sample_users)
+        mock_load.assert_called_once()
+
+    @patch("src.extract._load_to_bronze")
+    @patch("src.extract._read_csv_from_s3")
+    def test_returns_dataframe(self, mock_read_csv, mock_load, sample_users):
+        mock_read_csv.return_value = sample_users
+        result = extract_users()
+        assert isinstance(result, pd.DataFrame)
 
 
 class TestExtractOrders:
     """Tests for extract_orders()."""
-
     @patch("src.extract._load_to_bronze")
     @patch("src.extract._read_csv_from_s3")
     def test_extracts_and_loads(self, mock_read_csv, mock_load, sample_orders):
-        # TODO: Same pattern as TestExtractProducts
-        pass
+        mock_read_csv.return_value = sample_orders
+        result = extract_orders()
+        assert len(result) == len(sample_orders)
+        mock_load.assert_called_once()
+
+    @patch("src.extract._load_to_bronze")
+    @patch("src.extract._read_csv_from_s3")
+    def test_returns_dataframe(self, mock_read_csv, mock_load, sample_orders):
+        mock_read_csv.return_value = sample_orders
+        result = extract_orders()
+        assert isinstance(result, pd.DataFrame)
