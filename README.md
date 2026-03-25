@@ -1,70 +1,100 @@
-# KICKZ EMPIRE — ELT Pipeline
+# 👟 KICKZ EMPIRE — ELT Pipeline
 
 ELT (Extract, Load, Transform) pipeline for the **KICKZ EMPIRE** e-commerce website, built as part of the IMT Data Engineering course.
 
-## 🏗️ Architecture
+## 📌 1. Context
 
-```
-S3 (CSV)  ──→  🥉 Bronze (raw)  ──→  🥈 Silver (clean)  ──→  🥇 Gold (analytics)
-```
+KICKZ EMPIRE is a fast-growing e-commerce platform specializing in sneakers and streetwear (Nike, Adidas, Jordan, New Balance, Puma…). The store offers a wide range of products including sneakers, hoodies, t-shirts, joggers, and accessories to customers worldwide.
+
+Over the past few weeks, large volumes of data have been collected:
+
+Orders
+Product catalog
+User registrations
+Customer reviews
+Clickstream events
+
+These datasets are currently stored as raw files in an AWS S3 data lake in multiple formats (CSV, JSONL, Parquet). However, this raw structure makes it difficult to query and analyze the data efficiently.
+
+As a result, key business questions remain unanswered:
+
+How much revenue is generated daily?
+Which products are trending?
+Which brands and categories perform best?
+
+👉 The objective of this project is to build a robust ELT pipeline based on the Medallion Architecture (Bronze → Silver → Gold) to make this data actionable.
+
+We also implement best practices such as:
+
+Data testing
+Logging
+Monitoring
+
+to ensure the pipeline is production-ready.
+
+
+
+## 🏗️ 2. Architecture
+
+
+![Architecture Medaillon](diagram.png)
+
 
 | Layer | Schema | Description |
 |---|---|---|
-| **Bronze** | `bronze_groupN` | Raw data — faithful copy of CSV files from S3 |
-| **Silver** | `silver_groupN` | Cleaned data — internal columns removed, PII masked |
-| **Gold** | `gold_groupN` | Aggregated data — ready for dashboards |
+| **Bronze** | `bronze_group5` | Raw data — faithful copy of CSV files from S3 |
+| **Silver** | `silver_group5` | Cleaned data — internal columns removed, PII masked |
+| **Gold** | `gold_group5` | Aggregated data — ready for dashboards |
 
-## 📁 Project Structure
 
-```
-├── docs/
-│   ├── DATA_PRESENTATION.md    # KICKZ EMPIRE data presentation
-│   └── tp1/
-│       └── INSTRUCTIONS.md     # Step-by-step TP1 instructions
-├── src/
-│   ├── __init__.py
-│   ├── database.py             # PostgreSQL connection (AWS RDS)
-│   ├── extract.py              # Extract: S3 (CSV) → Bronze
-│   ├── transform.py            # Transform: Bronze → Silver
-│   └── gold.py                 # Gold: Silver → Gold (aggregations)
-├── pipeline.py                 # ELT orchestrator
-├── tests/                      # Tests (TP2)
-├── .env.example                # Environment variables template
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
-
-## 🚀 Quick Start
+## 🚀 3. Setup instructions
 
 ```bash
-# 1. Setup
-python -m venv venv && source venv/bin/activate
+# 1. Clone the repo
+git clone <repo-url>
+cd imt-elt-coding
+
+# 2. Configure the  virtual environment
+python -m venv venv
+
+source venv/bin/activate
+
 pip install -r requirements.txt
-cp .env.example .env  # Configure with your credentials (DB + AWS)
-
-# 2. Test the connection
-python -m src.database
-
-# 3. Run the pipeline (reads from S3 automatically)
-python pipeline.py
 ```
 
-## 📊 Datasets
+```bash
+# 3. Test the connection
 
-| Dataset | Format | Source (S3) | Bronze Table |
-|---|---|---|---|
-| Product Catalog | CSV | `raw/catalog/products.csv` | `products` |
-| Users | CSV | `raw/users/users.csv` | `users` |
-| Orders | CSV | `raw/orders/orders.csv` | `orders` |
-| Order Line Items | CSV | `raw/order_line_items/order_line_items.csv` | `order_line_items` |
+cp .env.example .env  # Configure with your credentials (DB + AWS)
 
-## 📚 Documentation
+python -m src.database
+```
 
-- [Data Presentation](docs/DATA_PRESENTATION.md)
-- [TP1 Instructions](docs/tp1/INSTRUCTIONS.md)
+## ▶️ 4. Run the Pipeline
+```bash
+#  Extraction step (Bronze)
+ python pipeline.py --step extract   # Run extraction only
 
-## ⚙️ Tech Stack
+#Transform step (Silver)
+ python pipeline.py --step transform # Run transformation only
+
+# Aggregations steps (Gold)
+python pipeline.py --step gold      # Run Gold layer only
+
+# Full Pipeline
+python pipeline.py                  # Run the full pipeline
+```
+
+## 🧪 5. Testing
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage report
+pytest tests/ -v --cov=src --cov-report=term-missing
+```
+
+## ⚙️ 6. Tech Stack
 
 - **Python 3.10+** : Main language
 - **pandas** : Data manipulation
@@ -72,3 +102,8 @@ python pipeline.py
 - **SQLAlchemy** : ORM / PostgreSQL connection
 - **PostgreSQL** (AWS RDS) : Database
 - **pytest** : Testing (TP2)
+
+## 👥 7. Team Members
+- **Eva LANSALOT**
+- **Kamon SOURABIE**
+- **Nada ALEIAN**
