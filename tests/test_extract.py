@@ -71,9 +71,4 @@ class TestExtractUsers:
 
 class TestExtractOrders:
     """Tests for extract_orders()."""
-
-    @patch("src.extract._load_to_bronze")
-    @patch("src.extract._read_csv_from_s3")
-    def test_extracts_and_loads(self, mock_read_csv, mock_load, sample_orders):
-        # TODO: Same pattern as TestExtractProducts
-        pass
+    pass
