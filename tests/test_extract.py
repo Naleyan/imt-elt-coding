@@ -34,14 +34,20 @@ class TestExtractProducts:
         #   2. result = extract_products()
         #   3. Assert result has the expected number of rows
         #   4. Assert mock_load was called (mock_load.assert_called_once())
-        pass
+        mock_read_csv.return_value = sample_products
+        result = extract_products()
+        assert len(result) == len(sample_products)
+        mock_load.assert_called_once()
+
 
     @patch("src.extract._load_to_bronze")
     @patch("src.extract._read_csv_from_s3")
     def test_returns_dataframe(self, mock_read_csv, mock_load, sample_products):
         # TODO: Test that the function returns a pandas DataFrame
         # Hint: isinstance(result, pd.DataFrame)
-        pass
+        mock_read_csv.return_value = sample_products
+        result = extract_products()
+        assert isinstance(result, pd.DataFrame)
 
 
 class TestExtractUsers:
